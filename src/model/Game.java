@@ -3,9 +3,12 @@ package model;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import model.Ball.Direction;
 
 /**
 * <b>Description:</b> The class Game in the package model.<br>
@@ -26,30 +29,11 @@ public class Game {
 	 */
 	public static final int NUMBER_OF_BESTS_SCORES = 10;
 	
-	/**
-	 * a constant that represents an upward direction movement.
-	 */
-	public static final int UP = 0;
-	
-	/**
-	 * a constant that represents downward direction movement.
-	 */
-	public static final int DOWN = 1;
-	
-	/**
-	 * a constant that represents leftward direction movement.
-	 */
-	public static final int LEFT = 2;
-	
-	/**
-	 * a constant that represents rightward direction movement.
-	 */
-	public static final int RIGHT = 3;
-	
 //Attributes
 	
 	private String path;
 	private int difficulty;
+	private int points;
 	private boolean win;
 	private Score[][] scores;
 	private ArrayList<Ball> balls;
@@ -59,20 +43,22 @@ public class Game {
 	/**
 	 * <b>Description:</b> Creates a new instance of Game.<br>
 	 * @param path - The path of the file with the game configuration.
-	 * @throws InvalidPathException - If the path doesn't exist or the path isn't a file.
+	 * @throws InvalidPathException If the path doesn't exist or isn't a file.
 	 */
 	
 	public Game(String path) throws InvalidPathException {
 		
 		File file = new File(path);
 		
-		if(!file.exists() || !file.isFile()) {
+		if(!file.isFile()) {
 			
 			throw new InvalidPathException();
 		}
 		
 		this.path = path;
 		difficulty = -1;
+		points = 0;
+		win = false;
 		scores = new Score[NUMBER_OF_LEVELS][NUMBER_OF_BESTS_SCORES];
 		balls = new ArrayList<Ball>();
 	}
@@ -81,8 +67,8 @@ public class Game {
 	
 	/**
 	 * <b>Description:</b> This method allows reading the valid lines of the game configuration file (lines that don't start with '#').<br>
-	 * @throws FileNotFoundException
-	 * @throws IOException
+	 * @throws FileNotFoundException If the named file does not exist, is a directory rather than a regular file, or for some other reason cannot be opened for reading.
+	 * @throws IOException If an I/O error occurs.
 	 */
 	
 	public void load() throws FileNotFoundException, IOException {
@@ -127,33 +113,6 @@ public class Game {
 	}
 	
 	/**
-	 * <b>Description:</b> This method allows setting the movement direction as a number.<br>
-	 * @param direction - A String with the movement direction.
-	 * @return The direction movement as a number.
-	 */
-	
-	public int selectDirection(String direction) {
-		
-		int result = UP;
-		
-		if(direction.equals("DOWN") || direction.equals("ABAJO")) {
-			
-			result = DOWN;
-		}
-		else if(direction.equals("LEFT") || direction.equals("IZQUIERDA")) {
-			
-			result = LEFT;
-			
-		}
-		else if(direction.equals("RIGHT") || direction.equals("DERECHA")) {
-			
-			result = RIGHT;
-		}
-		
-		return result;
-	}
-	
-	/**
 	 * <b>Description:</b> This method allows creating a ball with an array of String with the attributes.<br>
 	 * @param attributes - The ball attributes.
 	 * @return A ball with the attributes given.
@@ -166,12 +125,16 @@ public class Game {
 		try {
 			
 			double radius = Double.parseDouble(attributes[0]);
-			double centerX = Double.parseDouble(attributes[1]);
-			double centerY = Double.parseDouble(attributes[2]);
-			int direction = selectDirection(attributes[3]);
-			ball = new Ball(radius, centerX, centerY, direction);
+			double posX = Double.parseDouble(attributes[1]);
+			double posY = Double.parseDouble(attributes[2]);
+			int waitTime = Integer.parseInt(attributes[3]);
+			Direction direction = Direction.valueOf(attributes[4]);
+			int bounces = Integer.parseInt(attributes[5]);
+			boolean moving = Boolean.parseBoolean(attributes[6]);
+			
+			ball = new Ball(radius, posX, posY, waitTime, direction, bounces, moving);
 		}
-		catch(NumberFormatException e) {
+		catch(IllegalArgumentException e) {
 			
 			ball = null;
 		}
@@ -191,14 +154,44 @@ public class Game {
 		
 		for(int i = 0; i < balls.size() && running; i++) {
 			
-			if(balls.get(i).isBouncing()) {
+			if(balls.get(i).isMoving()) {
 				
 				win = false;
 				running = false;
 			}
 		}
 		
+		if(win) {
+			
+			this.win = true;
+		}
+		
 		return win;
+	}
+	
+	/**
+	 * <b>Description:</b> This method allows serializing the scores.<br>
+	 * @param path - The path where the scores will be saved.
+	 * @throws FileNotFoundException If the named file does not exist, is a directory rather than a regular file, or for some other reason cannot be opened for reading.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws InvalidPathException If the path doesn't exist or isn't a file.
+	 */
+	
+	public void saveScores(String path) throws FileNotFoundException, IOException, InvalidPathException {
+		
+		File file1 = new File(path);
+		
+		if(file1.isFile()) {
+			
+			FileOutputStream file = new FileOutputStream(path);
+			ObjectOutputStream output = new ObjectOutputStream(file);
+			output.writeObject(scores);
+			output.close();
+		}
+		else {
+			
+			throw new InvalidPathException();
+		}
 	}
 	
 //Setters

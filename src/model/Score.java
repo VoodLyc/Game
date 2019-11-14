@@ -7,7 +7,7 @@ import java.io.Serializable;
 * @author Johan Giraldo.
 */
 
-public class Score implements Serializable {
+public class Score implements Serializable, Comparable <Score> {
 	
 //Attributes
 	
@@ -27,6 +27,31 @@ public class Score implements Serializable {
 		
 		this.name = name;
 		this.points = points;
+	}
+	
+//Methods
+	
+	/**
+	 *<b>Description:</b> This method allows comparing a score with other score by the points.<br>
+	 *@param score The score with which it compares.
+	 *@return 0 if the points are equals, 1  if the score's points is major than the score's points which it compares, -1 if the score's points is minor than the score's points which it compares.
+	 */
+
+	@Override
+	public int compareTo(Score score) {
+		
+		int result = 0;
+		
+		if(this.getPoints() > score.getPoints()) {
+			
+			result = 1;
+		}
+		else if(this.getPoints() < score.getPoints()) {
+			
+			result = -1;
+		}
+		
+		return result;
 	}
 	
 //Getters
