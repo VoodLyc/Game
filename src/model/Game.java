@@ -34,7 +34,6 @@ public class Game {
 	private String path;
 	private int difficulty;
 	private int points;
-	private boolean win;
 	private Score[][] scores;
 	private ArrayList<Ball> balls;
 	
@@ -43,7 +42,7 @@ public class Game {
 	/**
 	 * <b>Description:</b> Creates a new instance of Game.<br>
 	 * @param path - The path of the file with the game configuration.
-	 * @throws InvalidPathException If the path doesn't exist or isn't a file.
+	 * @throws InvalidPathException If the path does not exist or is not a file.
 	 */
 	
 	public Game(String path) throws InvalidPathException {
@@ -58,7 +57,6 @@ public class Game {
 		this.path = path;
 		difficulty = -1;
 		points = 0;
-		win = false;
 		scores = new Score[NUMBER_OF_LEVELS][NUMBER_OF_BESTS_SCORES];
 		balls = new ArrayList<Ball>();
 	}
@@ -69,9 +67,10 @@ public class Game {
 	 * <b>Description:</b> This method allows reading the valid lines of the game configuration file (lines that don't start with '#').<br>
 	 * @throws FileNotFoundException If the named file does not exist, is a directory rather than a regular file, or for some other reason cannot be opened for reading.
 	 * @throws IOException If an I/O error occurs.
+	 * @throws InvalidPathException If the file is not a valid game configuration.
 	 */
 	
-	public void load() throws FileNotFoundException, IOException {
+	public void load() throws FileNotFoundException, IOException, InvalidPathException{
 		
 		FileReader file = new FileReader(path);
 		BufferedReader reader = new BufferedReader(file);
@@ -93,9 +92,10 @@ public class Game {
 	/**
 	 * <b>Description:</b> This method allows creating the balls and setting the difficulty attribute.<br>
 	 * @param lines - The lines of the game configuration file.
+	 * @throws InvalidPathException If the file is not a valid game configuration.
 	 */
 	
-	public void initGame(ArrayList<String> lines) {
+	public void initGame(ArrayList<String> lines) throws InvalidPathException {
 		
 		difficulty = Integer.parseInt(lines.get(0));
 		String[] attributes = new String[7];
@@ -116,11 +116,12 @@ public class Game {
 	 * <b>Description:</b> This method allows creating a ball with an array of String with the attributes.<br>
 	 * @param attributes - The ball attributes.
 	 * @return A ball with the attributes given.
+	 * @throws InvalidPathException If the file is not a valid game configuration.
 	 */
 	
-	public Ball createBall(String[] attributes) {
+	public Ball createBall(String[] attributes) throws InvalidPathException {
 		
-		Ball ball;
+		Ball ball = null;
 		
 		try {
 			
@@ -136,7 +137,7 @@ public class Game {
 		}
 		catch(IllegalArgumentException e) {
 			
-			ball = null;
+			throw new InvalidPathException();
 		}
 		
 		return ball;
@@ -161,11 +162,6 @@ public class Game {
 			}
 		}
 		
-		if(win) {
-			
-			this.win = true;
-		}
-		
 		return win;
 	}
 	
@@ -174,7 +170,7 @@ public class Game {
 	 * @param path - The path where the scores will be saved.
 	 * @throws FileNotFoundException If the named file does not exist, is a directory rather than a regular file, or for some other reason cannot be opened for reading.
 	 * @throws IOException If an I/O error occurs.
-	 * @throws InvalidPathException If the path doesn't exist or isn't a file.
+	 * @throws InvalidPathException If the path does not exist or is not a file.
 	 */
 	
 	public void saveScores(String path) throws FileNotFoundException, IOException, InvalidPathException {

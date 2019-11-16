@@ -65,7 +65,8 @@ public class Ball {
 		/**
 		 * <b>Description:</b> Creates a new instance of Direction.<br>
 		 * @param x The increment in x on the ball position.
-		 * @param y The increment in y on the ball position
+		 * @param y The increment in y on the ball position.
+		 * @param opposites Represents the opposites directions.
 		 */
 		
 		private Direction(int x, int y) {
@@ -111,6 +112,8 @@ public class Ball {
 	 * @param posX The ball position on X.
 	 * @param posY The ball position on Y.
 	 * @param direction The ball movement direction.
+	 * @param bounces The ball number of bounces.
+	 * @param moving The ball status.
 	 */
 	
 	public Ball(double radius, double posX, double posY, int waitTime, Direction direction, int bounces, boolean moving) {
@@ -122,6 +125,126 @@ public class Ball {
 		this.direction = direction;
 		this.bounces = bounces;
 		this.moving = moving;
+	}
+	
+//Methods
+	
+	/**
+	 * <b>Description:</b> This method allows moving ball.<br>
+	 * <b>Post:</b> The ball's x and y position changes.<br>
+	 */
+	
+	private void move() {
+		
+		posX += direction.getX();
+		posY += direction.getY();
+	}
+	
+	/**
+	 * <b>Description:</b> This method allows moving the ball and detecting the collisions.<br>
+	 * <b>Post:</b> The ball's x and y position changes and If the ball collision, it bounces.<br>
+	 * @param width - The width of the screen.
+ 	 * @param height - The height of the screen.
+	 */
+	
+	public void move(int width, int height) {
+		
+		if(detectCollisionBorder(width, height)) {
+			
+			invertDirection();
+		}
+		
+		move();
+	}
+	
+	/**
+	 * <b>Description:</b> This method allows detecting a collision with a screen border.<br> 
+	 * @param width - The width of the screen.
+ 	 * @param height - The height of the screen.
+	 * @return True if the ball collision with a screen border, false in otherwise.
+	 */
+	
+	public boolean detectCollisionBorder(int width, int height) {
+		
+		boolean collision = false;
+		
+		if((posX + direction.getX()) + radius > width) {
+			
+			collision = true;
+		}
+		else if((posX + direction.getX()) + radius < 0) {
+			
+			collision = true;
+		}
+		else if((posY + direction.getY()) + radius > height) {
+			
+			collision = true;
+		}
+		else if((posY + direction.getY()) + radius < 0) {
+			
+			collision = true;
+		}
+		
+		return collision;
+	}
+	
+	/**
+	 * <b>Description:</b> This method allows inverting the ball direction.<br>
+	 * <b>Post:</b> The ball direction was inverted.<br>
+	 */
+	
+	public void invertDirection() {
+		
+		switch(direction) {
+		
+		case UP:
+			
+			direction = Direction.DOWN;
+			
+			break;
+			
+		case DOWN:
+			
+			direction = Direction.UP;
+			
+			break;
+			
+		case RIGHT:
+			
+			direction = Direction.LEFT;
+			
+			break;
+			
+		case LEFT:
+			
+			direction = Direction.RIGHT;
+			
+			break;
+			
+		case UPPER_RIGHT_DIAGONAL:
+			
+			direction = Direction.LOWER_RIGHT_DIAGONAL;
+			
+			break;
+			
+		case LOWER_RIGHT_DIAGONAL:
+			
+			direction = Direction.UPPER_RIGHT_DIAGONAL;
+			
+			break;
+			
+		case UPPER_LEFT_DIAGONAL:
+			
+			direction = Direction.LOWER_LEFT_DIAGONAL;
+			
+			break;
+			
+		case LOWER_LEFT_DIAGONAL:
+			
+			direction = Direction.UPPER_LEFT_DIAGONAL;
+			
+			break;
+		}
 	}
 	
 //Getters
@@ -142,5 +265,14 @@ public class Ball {
 
 	public boolean isMoving() {
 		return moving;
+	}
+	
+	/**
+	 * <b>Description:</b> Gets the value of the attribute waitTime.<br>
+	 * @return The attribute waitTime.
+	 */
+	
+	public int getWaitTime() {
+		return waitTime;
 	}
 }
