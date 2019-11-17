@@ -15,13 +15,13 @@ public class Ball {
 		 * a constant that represents an upward direction movement.
 		 */
 		
-		UP(0, 1),
+		UP(0, -1),
 		
 		/**
 		 * a constant that represents downward direction movement.
 		 */
 		
-		DOWN(0, -1),
+		DOWN(0, 1),
 		
 		/**
 		 * a constant that represents rightward direction movement.
@@ -39,25 +39,25 @@ public class Ball {
 		 * a constant that represents upper right diagonal direction movement.
 		 */
 		
-		UPPER_RIGHT_DIAGONAL(1, 1),
+		UPPER_RIGHT_DIAGONAL(1, -1),
 		
 		/**
 		 * a constant that represents lower right diagonal direction movement.
 		 */
 		
-		LOWER_RIGHT_DIAGONAL(1, -1),
+		LOWER_RIGHT_DIAGONAL(1, 1),
 		
 		/**
 		 * a constant that represents upper left diagonal direction movement.
 		 */
 		
-		UPPER_LEFT_DIAGONAL(-1, 1),
+		UPPER_LEFT_DIAGONAL(-1, -1),
 		
 		/**
 		 * a constant that represents lower left diagonal direction movement.
 		 */
 		
-		LOWER_LEFT_DIAGONAL(-1, -1);
+		LOWER_LEFT_DIAGONAL(-1, 1);
 		
 		private int x;
 		private int y;
@@ -91,6 +91,24 @@ public class Ball {
 		
 		public int getY() {
 			return y;
+		}
+		
+		/**
+		 * <b>Description:</b> Sets the value of the attribute x.<br>
+		 * @param x - the increments on x. 
+		 */
+		
+		public void setX(int x) {
+			this.x = x;
+		}
+		
+		/**
+		 * <b>Description:</b> Sets the value of the attribute y.<br>
+		 * @param x - the increments on y. 
+		 */
+		
+		public void setY(int y) {
+			this.y = y;
 		}
 	}
 	
@@ -142,112 +160,93 @@ public class Ball {
 	
 	/**
 	 * <b>Description:</b> This method allows moving the ball and detecting the collisions.<br>
-	 * <b>Post:</b> The ball's x and y position changes and If the ball collision, it bounces.<br>
+	 * <b>Post:</b> The ball's x and y position changes and If the ball collision, it bounces and adds one bounce.<br>
 	 * @param width - The width of the screen.
  	 * @param height - The height of the screen.
 	 */
 	
-	public void move(int width, int height) {
+	public void move(double width, double height) {
 		
 		if(detectCollisionBorder(width, height)) {
 			
-			invertDirection();
+			bounces++;
 		}
 		
 		move();
 	}
-	
+
 	/**
-	 * <b>Description:</b> This method allows detecting a collision with a screen border.<br> 
+	 * <b>Description:</b> This method allows detecting a collision with a screen border and changing the ball direction.<br> 
 	 * @param width - The width of the screen.
  	 * @param height - The height of the screen.
 	 * @return True if the ball collision with a screen border, false in otherwise.
 	 */
 	
-	public boolean detectCollisionBorder(int width, int height) {
+	public boolean detectCollisionBorder(double width, double height) {
 		
 		boolean collision = false;
 		
-		if((posX + direction.getX()) + radius > width) {
+		double limitXRight = posX - radius;
+		double limitXLeft = posX + radius;
+		
+		if(limitXLeft <= 0) {
 			
 			collision = true;
+			direction.setX(Math.abs(direction.getX()));
+			
 		}
-		else if((posX + direction.getX()) + radius < 0) {
+		else if(limitXRight >= width) {
 			
 			collision = true;
+			direction.setX(direction.getX() * -1);
 		}
-		else if((posY + direction.getY()) + radius > height) {
+		
+		double limitYUp = posY - radius;
+		double limitYDown = posY + radius;
+		
+		if(limitYUp <= 0) {
 			
 			collision = true;
+			direction.setY(Math.abs(direction.getY()));
 		}
-		else if((posY + direction.getY()) + radius < 0) {
+		else if(limitYDown >= height) {
 			
 			collision = true;
+			direction.setY(direction.getY() * -1);
 		}
+		
 		
 		return collision;
 	}
 	
+//Getters
+	
 	/**
-	 * <b>Description:</b> This method allows inverting the ball direction.<br>
-	 * <b>Post:</b> The ball direction was inverted.<br>
+	 * <b>Description:</b> Gets the value of the attribute radius.<br>
+	 * @return The attribute radius.
 	 */
 	
-	public void invertDirection() {
-		
-		switch(direction) {
-		
-		case UP:
-			
-			direction = Direction.DOWN;
-			
-			break;
-			
-		case DOWN:
-			
-			direction = Direction.UP;
-			
-			break;
-			
-		case RIGHT:
-			
-			direction = Direction.LEFT;
-			
-			break;
-			
-		case LEFT:
-			
-			direction = Direction.RIGHT;
-			
-			break;
-			
-		case UPPER_RIGHT_DIAGONAL:
-			
-			direction = Direction.LOWER_RIGHT_DIAGONAL;
-			
-			break;
-			
-		case LOWER_RIGHT_DIAGONAL:
-			
-			direction = Direction.UPPER_RIGHT_DIAGONAL;
-			
-			break;
-			
-		case UPPER_LEFT_DIAGONAL:
-			
-			direction = Direction.LOWER_LEFT_DIAGONAL;
-			
-			break;
-			
-		case LOWER_LEFT_DIAGONAL:
-			
-			direction = Direction.UPPER_LEFT_DIAGONAL;
-			
-			break;
-		}
+	public double getRadius() {
+		return radius;
 	}
+
+	/**
+	 * <b>Description:</b> Gets the value of the attribute posX.<br>
+	 * @return The attribute posX.
+	 */
 	
-//Getters
+	public double getPosX() {
+		return posX;
+	}
+
+	/**
+	 * <b>Description:</b> Gets the value of the attribute posY.<br>
+	 * @return The attribute posY.
+	 */
+	
+	public double getPosY() {
+		return posY;
+	}
 	
 	/**
 	 * <b>Description:</b> Gets the value of the attribute bounces.<br>

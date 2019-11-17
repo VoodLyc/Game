@@ -67,7 +67,7 @@ public class Game {
 	 * <b>Description:</b> This method allows reading the valid lines of the game configuration file (lines that don't start with '#').<br>
 	 * @throws FileNotFoundException If the named file does not exist, is a directory rather than a regular file, or for some other reason cannot be opened for reading.
 	 * @throws IOException If an I/O error occurs.
-	 * @throws InvalidPathException If the file is not a valid game configuration.
+	 * @throws InvalidPathException If the file is not a valid game (do not have the expected format).
 	 */
 	
 	public void load() throws FileNotFoundException, IOException, InvalidPathException{
@@ -86,16 +86,24 @@ public class Game {
 		}
 		
 		reader.close();
-		initGame(lines);
+		
+		try {
+			
+			initGame(lines);
+		}
+		catch(IllegalArgumentException e) {
+			
+			throw new InvalidPathException();
+		}
 	}
 	
 	/**
 	 * <b>Description:</b> This method allows creating the balls and setting the difficulty attribute.<br>
 	 * @param lines - The lines of the game configuration file.
-	 * @throws InvalidPathException If the file is not a valid game configuration.
+	 * @throws IlegallArgumentException Thrown to indicate that a method has been passed an illegal or inappropriate argument.
 	 */
 	
-	public void initGame(ArrayList<String> lines) throws InvalidPathException {
+	public void initGame(ArrayList<String> lines) throws IllegalArgumentException {
 		
 		difficulty = Integer.parseInt(lines.get(0));
 		String[] attributes = new String[7];
@@ -116,29 +124,22 @@ public class Game {
 	 * <b>Description:</b> This method allows creating a ball with an array of String with the attributes.<br>
 	 * @param attributes - The ball attributes.
 	 * @return A ball with the attributes given.
-	 * @throws InvalidPathException If the file is not a valid game configuration.
+	 * @throws IlegallArgumentException Thrown to indicate that a method has been passed an illegal or inappropriate argument.
 	 */
 	
-	public Ball createBall(String[] attributes) throws InvalidPathException {
+	public Ball createBall(String[] attributes) throws IllegalArgumentException {
 		
 		Ball ball = null;
 		
-		try {
-			
-			double radius = Double.parseDouble(attributes[0]);
-			double posX = Double.parseDouble(attributes[1]);
-			double posY = Double.parseDouble(attributes[2]);
-			int waitTime = Integer.parseInt(attributes[3]);
-			Direction direction = Direction.valueOf(attributes[4]);
-			int bounces = Integer.parseInt(attributes[5]);
-			boolean moving = Boolean.parseBoolean(attributes[6]);
-			
-			ball = new Ball(radius, posX, posY, waitTime, direction, bounces, moving);
-		}
-		catch(IllegalArgumentException e) {
-			
-			throw new InvalidPathException();
-		}
+		double radius = Double.parseDouble(attributes[0]);
+		double posX = Double.parseDouble(attributes[1]);
+		double posY = Double.parseDouble(attributes[2]);
+		int waitTime = Integer.parseInt(attributes[3]);
+		Direction direction = Direction.valueOf(attributes[4]);
+		int bounces = Integer.parseInt(attributes[5]);
+		boolean moving = Boolean.parseBoolean(attributes[6]);
+		
+		ball = new Ball(radius, posX, posY, waitTime, direction, bounces, moving);
 		
 		return ball;
 	}
@@ -188,6 +189,17 @@ public class Game {
 			
 			throw new InvalidPathException();
 		}
+	}
+	
+//Getters
+	
+	/**
+	 * <b>Description:</b> Gets the value of the attribute balls.<br>
+	 * @return The attribute balls.
+	 */
+	
+	public ArrayList<Ball> getBalls() {
+		return balls;
 	}
 	
 //Setters

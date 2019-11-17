@@ -1,19 +1,27 @@
 package view;
 	
+import controller.ControllerGame;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.fxml.FXMLLoader;
 
+/**
+* <b>Description:</b> The class Main in the package view.<br>
+* @author Johan Giraldo.
+*/
 
 public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			VBox root = (VBox)FXMLLoader.load(getClass().getResource("Menu.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("Game.fxml"));
+			VBox root = (VBox) loader.load();
 			Scene scene = new Scene(root,800,600);
 			scene.getStylesheets().add(getClass().getResource("view.css").toExternalForm());
+			ControllerGame controller = loader.getController();
+			controller.setStage(primaryStage);
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {

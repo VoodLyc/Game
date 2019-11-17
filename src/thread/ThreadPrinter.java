@@ -1,29 +1,25 @@
 package thread;
 
 import controller.ControllerGame;
-import model.Ball;
 
 /**
 * <b>Description:</b> The class ThreaBall in the package thread.<br>
 * @author Johan Giraldo.
 */
 
-public class ThreadBall extends Thread {
-
+public class ThreadPrinter extends Thread {
+	
 //Attributes
 	
-	private Ball ball;
 	private ControllerGame controller;
-	
 	/**
 	 * <b>Description:</b> Creates a new instance of ThreadBall.<br>
 	 * @param ball The ball that the thread moves.
 	 * @param controller The controller that show the ball.
 	 */
 	
-	public ThreadBall(Ball ball, ControllerGame controller) {
+	public ThreadPrinter(ControllerGame controller) {
 		
-		this.ball = ball;
 		this.controller = controller;
 		setDaemon(true);
 	}
@@ -31,18 +27,16 @@ public class ThreadBall extends Thread {
 	@Override
 	public void run() {
 		
-		while(ball.isMoving()) {
+		while(!controller.win()) {
 			
-			ball.move(controller.getWidth(), controller.getHeight());
-			
+			controller.printBalls();
 			try {
-				
-				sleep(ball.getWaitTime());
+				sleep(2);
 			}
 			catch(InterruptedException e) {
 				
 			}
 		}
 	}
-	
+
 }

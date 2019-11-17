@@ -1,7 +1,8 @@
 #nivel
 0
 #radio	posX	posY	espera	direccion	rebotes	
-50	70	90	10	LEFT	0	false
-70	120	120	12	RIGHT	0	false
-80	350	230	14	UP	0	false
-60	280	10	16	DOWN	0	false
+50	70	90	10	LEFT	0	true
+70	120	120	12	RIGHT	0	true
+80	350	230	14	UP	0	true
+60	280	10	16	DOWN	0	true
+60	30	40	16	UPPER_RIGHT_DIAGONAL	0	true
