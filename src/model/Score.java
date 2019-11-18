@@ -42,11 +42,11 @@ public class Score implements Serializable, Comparable <Score> {
 		
 		int result = 0;
 		
-		if(this.getPoints() > score.getPoints()) {
+		if(points < score.getPoints()) {
 			
 			result = 1;
 		}
-		else if(this.getPoints() < score.getPoints()) {
+		else if(points > score.getPoints()) {
 			
 			result = -1;
 		}

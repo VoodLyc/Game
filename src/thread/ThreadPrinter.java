@@ -1,6 +1,7 @@
 package thread;
 
 import controller.ControllerGame;
+import javafx.application.Platform;
 
 /**
 * <b>Description:</b> The class ThreaBall in the package thread.<br>
@@ -27,6 +28,15 @@ public class ThreadPrinter extends Thread {
 	@Override
 	public void run() {
 		
+		//Creates a runnable to be running on the Application thread.
+		Runnable win = new Runnable() {
+			
+			@Override
+			public void run() {
+				controller.showWin();
+			}
+		};
+		
 		while(!controller.win()) {
 			
 			controller.printBalls();
@@ -37,6 +47,9 @@ public class ThreadPrinter extends Thread {
 				
 			}
 		}
+		
+		//Runs the runnable in the Application thread.
+		Platform.runLater(win);
 	}
 
 }

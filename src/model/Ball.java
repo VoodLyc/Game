@@ -9,7 +9,7 @@ public class Ball {
 	
 //Constants
 	
-	enum Direction {
+	public enum Direction {
 		
 		/**
 		 * a constant that represents an upward direction movement.
@@ -152,7 +152,7 @@ public class Ball {
 	 * <b>Post:</b> The ball's x and y position changes.<br>
 	 */
 	
-	private void move() {
+	public void move() {
 		
 		posX += direction.getX();
 		posY += direction.getY();
@@ -176,7 +176,7 @@ public class Ball {
 	}
 
 	/**
-	 * <b>Description:</b> This method allows detecting a collision with a screen border and changing the ball direction.<br> 
+	 * <b>Description:</b> This method allows detecting a collision with a screen border and changing the ball direction.<br>
 	 * @param width - The width of the screen.
  	 * @param height - The height of the screen.
 	 * @return True if the ball collision with a screen border, false in otherwise.
@@ -186,14 +186,13 @@ public class Ball {
 		
 		boolean collision = false;
 		
-		double limitXRight = posX - radius;
-		double limitXLeft = posX + radius;
+		double limitXLeft = posX - radius;
+		double limitXRight = posX + radius;
 		
 		if(limitXLeft <= 0) {
 			
 			collision = true;
 			direction.setX(Math.abs(direction.getX()));
-			
 		}
 		else if(limitXRight >= width) {
 			
@@ -215,8 +214,25 @@ public class Ball {
 			direction.setY(direction.getY() * -1);
 		}
 		
-		
 		return collision;
+	}
+	
+	/**
+	 * <b>Description:</b> This method allows stopping the ball if the point given is inside the ball.<br>
+	 * @param x - The point x position.
+	 * @param y - The point y position.
+	 */
+	
+	public void stop(double x, double y) {
+		
+		double distance;
+		
+		distance = Math.sqrt(Math.pow((posX - x), 2) + Math.pow(posY - y, 2));
+		
+		if(distance <= radius) {
+			
+			moving = false;
+		}
 	}
 	
 //Getters

@@ -163,7 +163,120 @@ public class Game {
 			}
 		}
 		
+		if(win) {
+			
+			calculateScore();
+		}
+		
 		return win;
+	}
+	
+	/**
+	 * <b>Description:</b> This method allows calculating the points.<br>
+	 * <b>Post:</b> The value of the attribute points is set.<br>
+	 */
+	
+	private void calculateScore() {
+		
+		int points = 0;
+		
+		for(Ball ball : balls) {
+			
+			points += ball.getBounces();
+		}
+		
+		this.points = points;
+	}
+	
+	
+	/**
+	 * <b>Description:</b> This method allows verifying if there are a free slot.<br>
+	 * @return True if there are a free slot, false in otherwise.
+	 */
+	
+	public boolean checkFreeScore() {
+		
+		boolean free = false;
+		boolean running = true;
+		
+		for(int i = 0; i < scores[difficulty].length && running; i++) {
+			
+			if(scores[difficulty][i] == null) {
+				
+				free = true;
+				running = false;
+			}
+		}
+		
+		return free;
+	}
+	
+	/**
+	 * <b>Description:</b> This method allows verifying if the score is a high score.<br>
+	 * @return True if is a high score, false in otherwise.
+	 */
+	
+	public boolean isHighScore() {
+		
+		return (getMinorScore().getPoints() > points);
+	}
+	
+	/**
+	 * <b>Description:</b> This method allows getting the minor high score.<br>
+	 * @return The minor high score.
+	 */
+	
+	public Score getMinorScore() {
+		
+		Score score = scores[difficulty][0];
+		
+		for(int i = 1; i < (scores[difficulty].length); i++) {
+			
+			Score tmp = scores[difficulty][i];
+			
+			int compare = score.compareTo(tmp);
+			
+			if((compare > 0 && compare != 0)) {
+				
+				score = tmp;
+			}
+		}
+		
+		return score;
+	}
+	
+	/**
+	 * <b>Description:</b> This method allows adding a score.<br>
+	 * @param name - The player's name who got the points.
+	 * @param points - The points that the player got in the game.
+	 */
+	
+	public void addScore(String name) {
+		
+		boolean running = true;
+		
+		for(int i = 0; i < scores[difficulty].length && running; i++) {
+			
+			if(scores[difficulty][i] == null) {
+				
+				scores[difficulty][i] = new Score(name, points);
+				running = false;
+			}
+		}
+	}
+	
+	/**
+	 * <b>Description:</b> This method allows stopping a ball if the point given is inside the ball.<br>
+	 * @param x - The point x position.
+	 * @param y - The point y position.
+	 */
+	
+	public void stopBalls(double x, double y) {
+		
+		for(Ball ball : balls) {
+			
+			ball.stop(x, y);
+		}
 	}
 	
 	/**
@@ -200,6 +313,15 @@ public class Game {
 	
 	public ArrayList<Ball> getBalls() {
 		return balls;
+	}
+	
+	/**
+	 * <b>Description:</b> Gets the value of the attribute points.<br>
+	 * @return The attribute points.
+	 */
+	
+	public int getPoints() {
+		return points;
 	}
 	
 //Setters
