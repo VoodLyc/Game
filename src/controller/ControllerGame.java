@@ -43,12 +43,6 @@ import thread.ThreadPrinter;
 public class ControllerGame implements Initializable {
 	
 	/**
-	 * a constant that represents the relative path where the games will be loaded.
-	 */
-	
-	public static final String GAMES = "data/games";
-	
-	/**
 	 * a constant that represents the relative path where the CSS is.
 	 */
 	
@@ -162,36 +156,50 @@ public class ControllerGame implements Initializable {
 		setCss(alert);
 		alert.showAndWait();
 			
-		if(game.checkFreeScore()) {
+		if(game.checkFreeSlot()) {
 			
-			//Creates a text input dialog to receive the player name.
-			TextInputDialog dialog = new TextInputDialog();
-			dialog.setTitle("High Score!");
-			dialog.setHeaderText(null);
-			
-			//Applies the CSS to the text input dialog.
-			setCss(dialog);
-			TextField text = dialog.getEditor();
-			dialog.getDialogPane().getButtonTypes().clear();
-			dialog.getDialogPane().getButtonTypes().add(ok);
-			dialog.showAndWait();
-			
-			//Saves the score with the name given.
-			game.addScore(askName(text,dialog));
+			saveHighScore();
 		}
 		else if(game.isHighScore()) {
 			
-			//Creates a text input dialog to receive the player name.
-			TextInputDialog dialog = new TextInputDialog();
-			dialog.setTitle("High Score!");
-			dialog.setHeaderText(null);
+			saveHighScore();
+		}
+	}
+	
+	public void saveHighScore() {
+		
+		//Creates a text input dialog to receive the player name.
+		TextInputDialog dialog = new TextInputDialog();
+		dialog.setTitle("High Score!");
+		dialog.setHeaderText(null);
+		
+		//Applies the CSS to the text input dialog.
+		setCss(dialog);
+		ButtonType ok = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+		TextField text = dialog.getEditor();
+		dialog.getDialogPane().getButtonTypes().clear();
+		dialog.getDialogPane().getButtonTypes().add(ok);
+		dialog.showAndWait();
+		
+		//Saves the score with the name given.
+		game.addScore(askName(text,dialog));
+		
+		try {
 			
-			//Applies the CSS to the text input dialog.
-			setCss(dialog);
-			TextField text = dialog.getEditor();
-			dialog.getDialogPane().getButtonTypes().clear();
-			dialog.getDialogPane().getButtonTypes().add(ok);
-			dialog.showAndWait();
+			game.saveScores(Game.SAVES);
+			
+		} 
+		catch(IOException | InvalidPathException e) {
+			
+			//Shows an alert if an I/O error occurs.
+			Alert alert = new Alert(AlertType.ERROR, "Saving error", ok);
+			alert.setHeaderText(null);
+			alert.setTitle("Saving error");
+			
+			//Applies the CSS to the alert.
+			setCss(alert);
+			alert.show();
+			e.printStackTrace();
 		}
 	}
 	
@@ -210,7 +218,7 @@ public class ControllerGame implements Initializable {
 				alert.setHeaderText(null);
 				alert.setTitle("Error!");
 				
-				//Applies the CSS to the text input dialog.
+				//Applies the CSS to the alert.
 				setCss(alert);
 				alert.showAndWait();
 				dialog.showAndWait();
@@ -224,7 +232,7 @@ public class ControllerGame implements Initializable {
 				alert.setHeaderText(null);
 				alert.setTitle("Error!");
 				
-				//Applies the CSS to the text input dialog.
+				//Applies the CSS to the alert.
 				setCss(alert);
 				alert.showAndWait();
 				dialog.showAndWait();
@@ -267,7 +275,7 @@ public class ControllerGame implements Initializable {
 		fileChooser.getExtensionFilters().add(new ExtensionFilter("Text Files", "*.txt"));
 		
 		//Creates a default dir to load the game file.
-		File initial = new File(GAMES);
+		File initial = new File(Game.GAMES);
 		fileChooser.setInitialDirectory(initial);
 		File selectedFile = fileChooser.showOpenDialog(stage);
 		
@@ -290,7 +298,7 @@ public class ControllerGame implements Initializable {
 			alert.setHeaderText(null);
 			alert.setTitle("Loading error");
 			
-			//Applies the CSS to the text input dialog.
+			//Applies the CSS to the alert.
 			setCss(alert);
 			alert.show();
 			
@@ -303,7 +311,7 @@ public class ControllerGame implements Initializable {
 			alert.setHeaderText(null);
 			alert.setTitle("Loading error");
 			
-			//Applies the CSS to the text input dialog.
+			//Applies the CSS to the alert.
 			setCss(alert);
 			alert.show();
 		}

@@ -29,6 +29,18 @@ public class Game {
 	 */
 	public static final int NUMBER_OF_BESTS_SCORES = 10;
 	
+	/**
+	 * a constant that represents the relative path where the games will be loaded.
+	 */
+	
+	public static final String GAMES = "data/games";
+	
+	/**
+	 * a constant that represents the relative path where the games will be loaded.
+	 */
+	
+	public static final String SAVES = "data/saves/scores.dat";
+	
 //Attributes
 	
 	private String path;
@@ -194,7 +206,7 @@ public class Game {
 	 * @return True if there are a free slot, false in otherwise.
 	 */
 	
-	public boolean checkFreeScore() {
+	public boolean checkFreeSlot() {
 		
 		boolean free = false;
 		boolean running = true;
@@ -223,6 +235,7 @@ public class Game {
 	
 	/**
 	 * <b>Description:</b> This method allows getting the minor high score.<br>
+	 * <b>Pre:</b> No one element in scores can be null.<br>
 	 * @return The minor high score.
 	 */
 	
@@ -236,7 +249,7 @@ public class Game {
 			
 			int compare = score.compareTo(tmp);
 			
-			if((compare > 0 && compare != 0)) {
+			if((compare > 0)) {
 				
 				score = tmp;
 			}
@@ -246,12 +259,58 @@ public class Game {
 	}
 	
 	/**
-	 * <b>Description:</b> This method allows adding a score.<br>
+	 * <b>Description:</b> This method allows adding a score to the scores.
 	 * @param name - The player's name who got the points.
-	 * @param points - The points that the player got in the game.
 	 */
 	
 	public void addScore(String name) {
+		
+		if(checkFreeSlot()) {
+			
+			addScoreFreeSlot(name);
+		}
+		else {
+			
+			addScoreSorted(name);
+		}
+	}
+	
+	/**
+	 * <b>Description:</b> This method allows adding a score and sort them.<br>
+	 * @param name - The player's name who got the points.
+	 */
+	
+	private void addScoreSorted(String name) {
+		
+		scores[difficulty][0] = new Score(name, points);
+		sortScores();
+	}
+	
+	/**
+	 * <b>Description:</b> This method allows sorting the scores from major to minor by the points.<br>
+	 * <b>Post:</b> The score are sorted by points from major to minor.<br>
+	 */
+	
+	public void sortScores(){
+		
+		for(int i = 1; i < scores[difficulty].length; i++){
+			for(int j = i - 1; j >= 0 && scores[difficulty][i].compareTo(scores[difficulty][i+1]) > 0; j--){
+				
+				Score one = scores[difficulty][j];
+				Score two = scores[difficulty][j+1];
+				
+				scores[difficulty][j] = two;
+				scores[difficulty][j+1] = one;
+			}
+		}
+	}
+	
+	/**
+	 * <b>Description:</b> This method allows adding a score.<br>
+	 * @param name - The player's name who got the points.
+	 */
+	
+	private void addScoreFreeSlot(String name) {
 		
 		boolean running = true;
 		
@@ -291,7 +350,7 @@ public class Game {
 		
 		File file1 = new File(path);
 		
-		if(file1.isFile()) {
+		if(!file1.isDirectory()) {
 			
 			FileOutputStream file = new FileOutputStream(path);
 			ObjectOutputStream output = new ObjectOutputStream(file);
