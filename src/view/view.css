@@ -20,4 +20,6 @@
 }
 .dialog:header *.header-panel {
 	-fx-background-color: #dcdcdc;
+	-fx-font: bold 11pt "Arial";
+	-fx-text-fill: black;
 }

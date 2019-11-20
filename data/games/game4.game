@@ -1,0 +1,8 @@
+#level
+0
+#radius	posX	posY	wait time	direction	bounces
+50.0	301.0	300.0	10	LEFT	2	true	
+70.0	441.0	120.0	12	RIGHT	0	false	
+80.0	509.0	310.0	14	LOWER_RIGHT_DIAGONAL	0	false	
+60.0	280.0	361.0	16	DOWN	0	false	
+60.0	499.0	300.0	16	UPPER_RIGHT_DIAGONAL	0	false	

@@ -2,11 +2,14 @@ package model;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import model.Ball.Direction;
 
@@ -39,7 +42,7 @@ public class Game {
 	 * a constant that represents the relative path where the games will be loaded.
 	 */
 	
-	public static final String SAVES = "data/saves/scores.dat";
+	public static final String SCORES = "data/scores/scores.dat";
 	
 //Attributes
 	
@@ -91,7 +94,7 @@ public class Game {
 		
 		while((line = reader.readLine()) != null) {
 			
-			if(line.charAt(0) != '#') {	
+			if(!line.isEmpty() && line.charAt(0) != '#') {	
 				
 				lines.add(line);
 			}
@@ -294,7 +297,7 @@ public class Game {
 	public void sortScores(){
 		
 		for(int i = 1; i < scores[difficulty].length; i++){
-			for(int j = i - 1; j >= 0 && scores[difficulty][i].compareTo(scores[difficulty][i+1]) > 0; j--){
+			for(int j = i - 1; scores[difficulty][j] != null && scores[difficulty][j+1] != null && j >= 0 && scores[difficulty][j].compareTo(scores[difficulty][j+1]) > 0; j--){
 				
 				Score one = scores[difficulty][j];
 				Score two = scores[difficulty][j+1];
@@ -320,6 +323,7 @@ public class Game {
 				
 				scores[difficulty][i] = new Score(name, points);
 				running = false;
+				sortScores();
 			}
 		}
 	}
@@ -335,6 +339,60 @@ public class Game {
 		for(Ball ball : balls) {
 			
 			ball.stop(x, y);
+		}
+	}
+	
+	/**
+	 * <b>Description:</b> This method allows saving a game.<br>
+	 * @param path The path where the game will be saved.
+	 * @throws FileNotFoundException Signals that an attempt to open the file denoted by a specified path name has failed.
+	 */
+	
+	public void saveGame(String path) throws FileNotFoundException {
+		
+		File file = new File(path);
+		PrintWriter writer = new PrintWriter(file);
+		writer.append(saveGame());
+		writer.close();
+	}
+	
+	/**
+	 * <b>Description:</b> This method allows making the to string to the game.<br>
+	 * @return A string with all the game information.
+	 */
+	
+	public String saveGame() {
+		
+		String data = "#level\n";
+		data += Integer.toString(difficulty) + "\n";
+		data += "#radius\tposX\tposY\twait time\tdirection\tbounces\n";
+		
+		for(Ball ball : balls) {
+			
+			data += ball.toString() + "\n";
+		}
+		
+		return data;
+	}
+	
+	/**
+	 * <b>Description:</b> This method allows loading the scores.<br>
+	 * @param path - The path where the scores are.
+	 * @throws IOException If an I/O error occurs.
+	 * @throws InvalidPathException Thrown when an application tries to load in a class through its string name, but no definition for the class with the specified name could be found.
+
+	 */
+	
+	public void loadScores(String path) throws IOException, ClassNotFoundException {
+		
+		File test = new File(path);
+		
+		if(test.exists()) {
+			
+			FileInputStream file = new FileInputStream(path);
+			ObjectInputStream input = new ObjectInputStream(file);
+			scores = (Score[][]) input.readObject();
+			input.close();
 		}
 	}
 	

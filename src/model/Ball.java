@@ -235,6 +235,27 @@ public class Ball {
 		}
 	}
 	
+	/**
+	 * <b>Description:</b> This method convert the ball attributes in string.<br>
+	 * @return A String with the ball attributes.
+	 */
+	
+	@Override
+	public String toString() {
+		
+		String toString = "";
+		
+		toString += Double.toString(radius) + "\t";
+		toString += Double.toString(posX) + "\t";
+		toString += Double.toString(posY) + "\t";
+		toString += Integer.toString(waitTime) + "\t";
+		toString += direction.name() + "\t";
+		toString += Integer.toString(bounces) + "\t";
+		toString += Boolean.toString(moving) + "\t";
+		
+		return toString;
+	}
+	
 //Getters
 	
 	/**

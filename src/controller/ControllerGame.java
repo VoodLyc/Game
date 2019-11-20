@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import model.Ball;
 import model.Game;
 import model.InvalidPathException;
@@ -85,10 +87,12 @@ public class ControllerGame implements Initializable {
 		menuBar.getMenus().clear();
 		Menu file = new Menu("File");
 		MenuItem loadGame = new MenuItem("Load game");
+		MenuItem saveGame = new MenuItem("Save game");
+		saveGame.setDisable(true);
 		
 		//Set the on action to the menuItem.
-		loadGame.setOnAction(event -> loadGame());
-		MenuItem saveGame = new MenuItem("Save game");
+		loadGame.setOnAction(event -> loadGame(saveGame));
+		saveGame.setOnAction(event -> saveGame());
 		menuBar.getMenus().addAll(file);
 		file.getItems().addAll(loadGame, saveGame);
 	}
@@ -148,7 +152,7 @@ public class ControllerGame implements Initializable {
 		
 		//Creates an alert to show the score to the user.
 		ButtonType ok = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
-		Alert alert = new Alert(AlertType.INFORMATION, "Score : " + game.getPoints(), ok);
+		Alert alert = new Alert(AlertType.NONE, "Score : " + game.getPoints(), ok);
 		alert.setHeaderText(null);
 		alert.setTitle("You win!");
 		
@@ -170,9 +174,10 @@ public class ControllerGame implements Initializable {
 		
 		//Creates a text input dialog to receive the player name.
 		TextInputDialog dialog = new TextInputDialog();
-		dialog.setTitle("High Score!");
-		dialog.setHeaderText(null);
-		
+		dialog.setHeaderText("You made a high score,\nplease enter your name");
+		dialog.setGraphic(null);
+		dialog.initStyle(StageStyle.UNDECORATED);
+
 		//Applies the CSS to the text input dialog.
 		setCss(dialog);
 		ButtonType ok = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
@@ -186,7 +191,7 @@ public class ControllerGame implements Initializable {
 		
 		try {
 			
-			game.saveScores(Game.SAVES);
+			game.saveScores(Game.SCORES);
 			
 		} 
 		catch(IOException | InvalidPathException e) {
@@ -265,14 +270,51 @@ public class ControllerGame implements Initializable {
 		}
 	}
 	
-	public void loadGame() {
+	public void saveGame() {
+		
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.getExtensionFilters().add(new ExtensionFilter("Game Files", "*.game"));
+		File initial = new File(Game.GAMES);
+		fileChooser.setInitialDirectory(initial);
+	    File selectedFile = fileChooser.showSaveDialog(stage);
+	    try {
+	    	
+	    	game.saveGame(selectedFile.getPath());
+	    }
+	    catch(NullPointerException e) {
+			
+	    	//Shows an alert if the user doesn't select a file.
+			ButtonType ok = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+			Alert alert = new Alert(AlertType.ERROR, "Please create a file!", ok);
+			alert.setHeaderText(null);
+			alert.setTitle("Saving error");
+			
+			//Applies the CSS to the alert.
+			setCss(alert);
+			alert.show();
+	    }
+	    catch(IOException e) {
+	    	
+			//Shows an alert if the user doesn't select a file.
+			ButtonType ok = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+			Alert alert = new Alert(AlertType.ERROR, "Saving error!", ok);
+			alert.setHeaderText(null);
+			alert.setTitle("Error");
+			
+			//Applies the CSS to the alert.
+			setCss(alert);
+			alert.show();
+	    }
+	}
+	
+	public void loadGame(MenuItem saveGame) {
 		
 		//Creates a file chooser to choose the file to load.
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Load game");
 		
 		//Add an extension filter to the file chooser.
-		fileChooser.getExtensionFilters().add(new ExtensionFilter("Text Files", "*.txt"));
+		fileChooser.getExtensionFilters().add(new ExtensionFilter("Game Files", "*.game"));
 		
 		//Creates a default dir to load the game file.
 		File initial = new File(Game.GAMES);
@@ -282,9 +324,11 @@ public class ControllerGame implements Initializable {
 		try {
 			
 			//Creates a new game with the file selected.
-			game = new Game(selectedFile.toString());
+			game = new Game(selectedFile.getPath());
 			game.load();
+			game.loadScores(Game.SCORES);
 			pane.getChildren().clear();
+			saveGame.setDisable(false);
 			
 			//Run the threads that show the balls on the screen
 			initGraphics();
@@ -303,7 +347,7 @@ public class ControllerGame implements Initializable {
 			alert.show();
 			
 		}
-		catch(InvalidPathException | IOException e) {
+		catch(InvalidPathException | IOException | ClassNotFoundException e) {
 			
 			//Shows an alert if the user selects an invalid file (a file that doesn't have the expected format).
 			ButtonType ok = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
