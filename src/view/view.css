@@ -1,28 +1,30 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
 .dialog {
-	-fx-background-color: #dcdcdc;
 	-fx-border-color: black;
 	-fx-border-radius: 3;
 }
 .dialog > *.buttonbar > *.container {
-	-fx-background-color: #dcdcdc;
+	-fx-background-color: white;
 }
 .dialog > *.content.label {
 	-fx-text-fill:black;
-	-fx-font: bold 12pt "Arial";
+	-fx-font: bold 10pt "Arial";
 }
 .dialog *.button {
-	-fx-background-color: #dcdcdc;
-	-fx-font: bold 11pt "Arial";
+	-fx-background-color: white;
+	-fx-font: bold 10pt "Arial";
 	-fx-text-fill: black;
 	-fx-border-color: black;
 	-fx-border-radius: 3;
 }
 .dialog:header *.header-panel {
-	-fx-background-color: #dcdcdc;
-	-fx-font: bold 11pt "Arial";
+	-fx-font: bold 10pt "Arial";
 	-fx-text-fill: black;
 }
 .label {
-	-fx-font: bold 12pt "Arial";
+	-fx-font: bold 10pt "Arial";
+}
+.text-field {
+	-fx-font: bold 10pt "Arial";
+	-fx-text-fill: black;
 }

@@ -18,9 +18,7 @@ public class Main extends Application {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("Game.fxml"));
 			VBox root = (VBox) loader.load();
-			Scene scene = new Scene(root, 800, 600);
-			primaryStage.setHeight(600);
-			primaryStage.setWidth(800);
+			Scene scene = new Scene(root);
 			primaryStage.setMinHeight(600);
 			primaryStage.setMinWidth(800);
 			scene.getStylesheets().add(getClass().getResource("view.css").toExternalForm());

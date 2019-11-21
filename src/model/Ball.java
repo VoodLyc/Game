@@ -311,4 +311,16 @@ public class Ball {
 	public int getWaitTime() {
 		return waitTime;
 	}
+	
+//Setters
+	
+	/**
+	 * <b>Description:</b> Sets the value of the attribute moving.<br>
+	 * @param moving - The ball status. 
+	 */
+	
+	public void setMoving(boolean moving) {
+		
+		this.moving = moving;
+	}
 }

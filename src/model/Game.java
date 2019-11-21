@@ -210,6 +210,19 @@ public class Game {
 	}
 	
 	/**
+	 * <b>Description:</b> This method allows ending a game.<br>
+	 * <b>Post:</b> All the balls will be stopped.<br>
+	 */
+	
+	public void endGame() {
+		
+		for(Ball ball : balls) {
+			
+			ball.setMoving(false);
+		}
+	}
+	
+	/**
 	 * <b>Description:</b> This method allows checking if the player win the game.<br>
 	 * @return true if the player win, false in otherwise.
 	 */

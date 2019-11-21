@@ -68,6 +68,7 @@ public class ControllerGame implements Initializable {
 	private BorderPane border;
 	private GraphicsContext gc;
 	private Game game;
+	private boolean restart;
 
 
 	@Override
@@ -104,10 +105,11 @@ public class ControllerGame implements Initializable {
 		//Set the on action to the menuItem.
 		loadGame.setOnAction(event -> loadGame(saveGame, highScores));
 		saveGame.setOnAction(event -> saveGame());
-		highScores.setOnAction(event -> showHighScores());
+		highScores.setOnAction(event -> showHighScores(saveGame, highScores));
 		menuBar.getMenus().addAll(file, scores);
 		scores.getItems().addAll(highScores);
 		file.getItems().addAll(loadGame, saveGame);
+		restart = false;
 	}
 	
 	public void stopBall(MouseEvent mouse) {
@@ -119,8 +121,10 @@ public class ControllerGame implements Initializable {
 		game.stopBalls(x, y);
 	}
 	
-	public void showHighScores() {
+	public void showHighScores(MenuItem saveGame, MenuItem highScores) {
 		
+		saveGame.setDisable(true);
+		highScores.setDisable(true);
 		//Clears the VBox's children.
 		box.getChildren().remove(pane);
 		border = new BorderPane();
@@ -341,23 +345,26 @@ public class ControllerGame implements Initializable {
 	
 	public void showWin() {
 		
-		//Creates an alert to show the score to the user.
-		ButtonType ok = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
-		Alert alert = new Alert(AlertType.NONE, "Score : " + game.getPoints(), ok);
-		alert.setHeaderText(null);
-		alert.setTitle("You win!");
-		
-		//Applies the CSS to the alert.
-		setCss(alert);
-		alert.showAndWait();
+		if(!restart) {
 			
-		if(game.checkFreeSlot()) {
+			//Creates an alert to show the score to the user.
+			ButtonType ok = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+			Alert alert = new Alert(AlertType.NONE, "Score: " + game.getPoints(), ok);
+			alert.setHeaderText(null);
+			alert.setTitle("You win!");
 			
-			saveHighScore();
-		}
-		else if(game.isHighScore()) {
+			//Applies the CSS to the alert.
+			setCss(alert);
+			alert.showAndWait();
 			
-			saveHighScore();
+			if(game.checkFreeSlot()) {
+				
+				saveHighScore();
+			}
+			else if(game.isHighScore()) {
+				
+				saveHighScore();
+			}
 		}
 	}
 	
@@ -365,13 +372,14 @@ public class ControllerGame implements Initializable {
 		
 		//Creates a text input dialog to receive the player name.
 		TextInputDialog dialog = new TextInputDialog();
-		dialog.setHeaderText("You made a high score,\nplease enter your name");
+		dialog.setHeaderText(null);
+		dialog.setContentText("Please enter your name!");
 		dialog.setGraphic(null);
 		dialog.initStyle(StageStyle.UNDECORATED);
 
 		//Applies the CSS to the text input dialog.
 		setCss(dialog);
-		ButtonType ok = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+		ButtonType ok = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
 		TextField text = dialog.getEditor();
 		dialog.getDialogPane().getButtonTypes().clear();
 		dialog.getDialogPane().getButtonTypes().add(ok);
@@ -406,25 +414,11 @@ public class ControllerGame implements Initializable {
 		
 		while(running) {
 			
-			if(name.equals("")) {
+			if(name.isEmpty()) {
 				
 				//Shows an alert if the name is empty.
-				ButtonType ok = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+				ButtonType ok = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
 				Alert alert = new Alert(AlertType.ERROR, "Please enter your name!", ok);
-				alert.setHeaderText(null);
-				alert.setTitle("Error!");
-				
-				//Applies the CSS to the alert.
-				setCss(alert);
-				alert.showAndWait();
-				dialog.showAndWait();
-				name = text.getText();
-			}
-			else if(name.length() < 5) {
-				
-				//Shows an alert if the name length is less than 5 characters.
-				ButtonType ok = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
-				Alert alert = new Alert(AlertType.ERROR, "Name should be at least 5 characters long!", ok);
 				alert.setHeaderText(null);
 				alert.setTitle("Error!");
 				
@@ -500,6 +494,13 @@ public class ControllerGame implements Initializable {
 	
 	public void loadGame(MenuItem saveGame, MenuItem highScores) {
 		
+		
+		//Ends the game if exists.
+		if(game != null) {
+			restart = true;
+			game.endGame();
+		}
+		
 		//Creates a file chooser to choose the file to load.
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Load game");
@@ -519,8 +520,17 @@ public class ControllerGame implements Initializable {
 			game.load();
 			game.loadScores(Game.SCORES);
 			pane.getChildren().clear();
+			restart = false;
 			saveGame.setDisable(false);
 			highScores.setDisable(false);
+			
+			//Removes the borderPane if exists
+			if(box.getChildren().contains(border))
+				box.getChildren().remove(border);
+			
+			//Adds the AnchorPane if doesn't have it.
+			if(!box.getChildren().contains(pane))
+				box.getChildren().add(pane);
 			
 			//Run the threads that show the balls on the screen.
 			initGraphics();
