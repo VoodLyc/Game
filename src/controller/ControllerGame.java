@@ -278,7 +278,7 @@ public class ControllerGame implements Initializable {
 		//Add the scores labels
 		for(int i = 0; i < 10; i++) {
 			
-			int[] scores = game.showHighScoresPoints(1);
+			int[] scores = game.showHighScoresPoints(2);
 			Label points;
 			
 			if(scores[i] == -1) {
@@ -296,7 +296,7 @@ public class ControllerGame implements Initializable {
 		//Add the names labels
 		for(int i = 0; i < 10; i++) {
 			
-			String[] names = game.showHighScoresNames(1);
+			String[] names = game.showHighScoresNames(2);
 			Label points = new Label(names[i]);
 			grid.add(points, 8, i+2);
 		}
@@ -338,7 +338,9 @@ public class ControllerGame implements Initializable {
 			double wh = (ball.getRadius() * 2);
 			
 			//Draws the ball on the screen
-			gc.setFill(Color.YELLOW);
+			
+			Color color = new Color(ball.getR(), ball.getG(), ball.getB(), 1);
+			gc.setFill(color);
 			gc.fillOval(x, y, wh, wh);
 		}
 	}

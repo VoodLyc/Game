@@ -53,7 +53,7 @@ public class ThreadPrinter extends Thread {
 			Platform.runLater(print);
 			
 			try {
-				sleep(2);
+				sleep(1);
 			}
 			catch(InterruptedException e) {
 				

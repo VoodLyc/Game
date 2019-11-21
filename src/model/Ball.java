@@ -121,6 +121,9 @@ public class Ball {
 	private Direction direction;
 	private int bounces;
 	private boolean moving;
+	private double r;
+	private double g;
+	private double b;
 	
 //Constructor
 	
@@ -143,6 +146,9 @@ public class Ball {
 		this.direction = direction;
 		this.bounces = bounces;
 		this.moving = moving;
+		r = Math.random();
+		g = Math.random();
+		b = Math.random();
 	}
 	
 //Methods
@@ -310,6 +316,33 @@ public class Ball {
 	
 	public int getWaitTime() {
 		return waitTime;
+	}
+	
+	/**
+	 * <b>Description:</b> Gets the value of the attribute r.<br>
+	 * @return The attribute r.
+	 */
+	
+	public double getR() {
+		return r;
+	}
+	
+	/**
+	 * <b>Description:</b> Gets the value of the attribute g.<br>
+	 * @return The attribute g.
+	 */
+	
+	public double getG() {
+		return g;
+	}
+	
+	/**
+	 * <b>Description:</b> Gets the value of the attribute b.<br>
+	 * @return The attribute b.
+	 */
+	
+	public double getB() {
+		return b;
 	}
 	
 //Setters
