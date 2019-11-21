@@ -23,3 +23,6 @@
 	-fx-font: bold 11pt "Arial";
 	-fx-text-fill: black;
 }
+.label {
+	-fx-font: bold 12pt "Arial";
+}

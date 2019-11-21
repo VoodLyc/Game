@@ -41,6 +41,7 @@ public class ThreadBall extends Thread {
 			}
 			catch(InterruptedException e) {
 				
+				e.printStackTrace();
 			}
 		}
 	}

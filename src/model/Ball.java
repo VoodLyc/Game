@@ -197,7 +197,7 @@ public class Ball {
 		else if(limitXRight >= width) {
 			
 			collision = true;
-			direction.setX(direction.getX() * -1);
+			direction.setX(Math.abs(direction.getX()) * -1);
 		}
 		
 		double limitYUp = posY - radius;
@@ -211,7 +211,7 @@ public class Ball {
 		else if(limitYDown >= height) {
 			
 			collision = true;
-			direction.setY(direction.getY() * -1);
+			direction.setY(Math.abs(direction.getY()) * -1);
 		}
 		
 		return collision;

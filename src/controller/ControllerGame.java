@@ -1,13 +1,13 @@
 package controller;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -16,6 +16,7 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -24,6 +25,11 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -59,8 +65,10 @@ public class ControllerGame implements Initializable {
 	
 	private Stage stage;
 	private Canvas canvas;
+	private BorderPane border;
 	private GraphicsContext gc;
 	private Game game;
+
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -88,15 +96,19 @@ public class ControllerGame implements Initializable {
 		Menu file = new Menu("File");
 		MenuItem loadGame = new MenuItem("Load game");
 		MenuItem saveGame = new MenuItem("Save game");
+		Menu scores = new Menu("Scores");
+		MenuItem highScores = new MenuItem("High scores");
 		saveGame.setDisable(true);
+		highScores.setDisable(true);
 		
 		//Set the on action to the menuItem.
-		loadGame.setOnAction(event -> loadGame(saveGame));
+		loadGame.setOnAction(event -> loadGame(saveGame, highScores));
 		saveGame.setOnAction(event -> saveGame());
-		menuBar.getMenus().addAll(file);
+		highScores.setOnAction(event -> showHighScores());
+		menuBar.getMenus().addAll(file, scores);
+		scores.getItems().addAll(highScores);
 		file.getItems().addAll(loadGame, saveGame);
 	}
-	
 	
 	public void stopBall(MouseEvent mouse) {
 		
@@ -105,6 +117,185 @@ public class ControllerGame implements Initializable {
 		double y = mouse.getY();
 		
 		game.stopBalls(x, y);
+	}
+	
+	public void showHighScores() {
+		
+		//Clears the VBox's children.
+		box.getChildren().remove(pane);
+		border = new BorderPane();
+		Insets boxPadding = new Insets(50, 50, 50, 50);
+		border.setPadding(boxPadding);
+		
+		//Creates a GridPane.
+		GridPane grid = new GridPane();
+		
+		//Creates 9 columns in the GridPane.
+		for(int i = 0; i < 8; i++) {
+			
+			ColumnConstraints column = new ColumnConstraints();
+			column.setHgrow(Priority.ALWAYS);
+			grid.getColumnConstraints().add(column);
+		}
+		
+		//Creates 12 rows in the GridPane.
+		for(int i = 0; i < 11; i++) {
+			
+			RowConstraints row = new RowConstraints();
+			row.setVgrow(Priority.ALWAYS);
+			grid.getRowConstraints().add(row);
+		}
+		
+		showScoresOne(grid);
+		showScoresTwo(grid);
+		showScoresThree(grid);
+		
+		//Adds the labels in the gridPane.
+		border.setCenter(grid);
+		box.getChildren().add(border);
+	}
+	
+	public void showScoresOne(GridPane grid) {
+		
+		//Creates the headers labels
+		Label level = new Label("LEVEL" + " " + 1);
+		Label rank = new Label("RANK");
+		Label score = new Label("SCORE");
+		Label name = new Label("NAME");
+		
+		//Adds the labels
+		grid.add(level, 1, 0);
+		grid.add(rank, 0, 1);
+		grid.add(score, 1, 1);
+		grid.add(name, 2, 1);
+		
+		//Add the rank labels
+		for(int i = 1; i < 11; i++) {
+			
+			Label number = new Label("   " + i);
+			grid.add(number, 0, i+1);
+		}
+		
+		//Add the scores labels
+		for(int i = 0; i < 10; i++) {
+			
+			int[] scores = game.showHighScoresPoints(0);
+			Label points;
+			
+			if(scores[i] == -1) {
+				
+				points = new Label("   " + "-");
+			}
+			else {
+				
+				points = new Label("   " + scores[i]);
+			}
+			grid.add(points, 1, i+2);
+		}
+		
+		//Add the names labels
+		for(int i = 0; i < 10; i++) {
+			
+			String[] names = game.showHighScoresNames(0);
+			Label scoreName = new Label(names[i]);
+			grid.add(scoreName, 2, i+2);
+		}
+	}
+	
+	public void showScoresTwo(GridPane grid) {
+		
+		//Creates the headers labels
+		Label level = new Label("LEVEL" + " " + 2);
+		Label rank = new Label("RANK");
+		Label score = new Label("SCORE");
+		Label name = new Label("NAME");
+		
+		//Adds the labels
+		grid.add(level, 4, 0);
+		grid.add(rank, 3, 1);
+		grid.add(score, 4, 1);
+		grid.add(name, 5, 1);
+		
+		//Add the rank labels
+		for(int i = 1; i < 11; i++) {
+			
+			Label number = new Label("   " + i);
+			grid.add(number, 3, i+1);
+		}
+		
+		//Add the scores labels
+		for(int i = 0; i < 10; i++) {
+			
+			int[] scores = game.showHighScoresPoints(1);
+			Label points;
+			
+			if(scores[i] == -1) {
+				
+				points = new Label("   " + "-");
+			}
+			else {
+				
+				points = new Label("   " + scores[i]);
+			}
+			
+			grid.add(points, 4, i+2);
+		}
+		
+		//Add the names labels
+		for(int i = 0; i < 10; i++) {
+			
+			String[] names = game.showHighScoresNames(1);
+			Label points = new Label(names[i]);
+			grid.add(points, 5, i+2);
+		}
+	}
+	
+	public void showScoresThree(GridPane grid) {
+		
+		//Creates the headers labels
+		Label level = new Label("LEVEL" + " " + 3);
+		Label rank = new Label("RANK");
+		Label score = new Label("SCORE");
+		Label name = new Label("NAME");
+		
+		//Adds the labels
+		grid.add(level, 7, 0);
+		grid.add(rank, 6, 1);
+		grid.add(score, 7, 1);
+		grid.add(name, 8, 1);
+		
+		//Add the rank labels
+		for(int i = 1; i < 11; i++) {
+			
+			Label number = new Label("   " + i);
+			grid.add(number, 6, i+1);
+		}
+		
+		//Add the scores labels
+		for(int i = 0; i < 10; i++) {
+			
+			int[] scores = game.showHighScoresPoints(1);
+			Label points;
+			
+			if(scores[i] == -1) {
+				
+				points = new Label("   " + "-");
+			}
+			else {
+				
+				points = new Label("   " + scores[i]);
+			}
+			
+			grid.add(points, 7, i+2);
+		}
+		
+		//Add the names labels
+		for(int i = 0; i < 10; i++) {
+			
+			String[] names = game.showHighScoresNames(1);
+			Label points = new Label(names[i]);
+			grid.add(points, 8, i+2);
+		}
 	}
 	
 	public void initGraphics() {
@@ -307,7 +498,7 @@ public class ControllerGame implements Initializable {
 	    }
 	}
 	
-	public void loadGame(MenuItem saveGame) {
+	public void loadGame(MenuItem saveGame, MenuItem highScores) {
 		
 		//Creates a file chooser to choose the file to load.
 		FileChooser fileChooser = new FileChooser();
@@ -329,8 +520,9 @@ public class ControllerGame implements Initializable {
 			game.loadScores(Game.SCORES);
 			pane.getChildren().clear();
 			saveGame.setDisable(false);
+			highScores.setDisable(false);
 			
-			//Run the threads that show the balls on the screen
+			//Run the threads that show the balls on the screen.
 			initGraphics();
 			initGame();
 		}

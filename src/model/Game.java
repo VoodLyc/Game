@@ -160,6 +160,56 @@ public class Game {
 	}
 	
 	/**
+	 * <b>Description:</b> This method allows getting the names of the high scores.<br>
+	 * @param difficulty The game difficulty.
+	 * @return An array of strings with the names of the high scores.
+	 */
+	
+	public String[] showHighScoresNames(int difficulty) {
+		
+		String[] names = new String[NUMBER_OF_BESTS_SCORES];
+		
+		for(int i = 0; i < scores[difficulty].length; i++) {
+			
+			if(scores[difficulty][i] != null) {
+				
+				names[i] = scores[difficulty][i].getName();
+			}
+			else {
+				
+				names[i] = "-";
+			}
+		}
+		
+		return names;
+	}
+	
+	/**
+	 * <b>Description:</b> This method allows getting the points of the high scores.<br>
+	 * @param difficulty The game difficulty.
+	 * @return An array of strings with the points of the high scores.
+	 */
+	
+	public int[] showHighScoresPoints(int difficulty) {
+		
+		int[] names = new int[NUMBER_OF_BESTS_SCORES];
+		
+		for(int i = 0; i < scores[difficulty].length; i++) {
+			
+			if(scores[difficulty][i] != null) {
+				
+				names[i] = scores[difficulty][i].getPoints();
+			}
+			else {
+				
+				names[i] = -1;
+			}
+		}
+		
+		return names;
+	}
+	
+	/**
 	 * <b>Description:</b> This method allows checking if the player win the game.<br>
 	 * @return true if the player win, false in otherwise.
 	 */
@@ -244,21 +294,7 @@ public class Game {
 	
 	public Score getMinorScore() {
 		
-		Score score = scores[difficulty][0];
-		
-		for(int i = 1; i < (scores[difficulty].length); i++) {
-			
-			Score tmp = scores[difficulty][i];
-			
-			int compare = score.compareTo(tmp);
-			
-			if((compare > 0)) {
-				
-				score = tmp;
-			}
-		}
-		
-		return score;
+		return scores[difficulty][(NUMBER_OF_BESTS_SCORES - 1)];
 	}
 	
 	/**
@@ -285,7 +321,7 @@ public class Game {
 	
 	private void addScoreSorted(String name) {
 		
-		scores[difficulty][0] = new Score(name, points);
+		scores[difficulty][(NUMBER_OF_BESTS_SCORES - 1)] = new Score(name, points);
 		sortScores();
 	}
 	
@@ -297,7 +333,7 @@ public class Game {
 	public void sortScores(){
 		
 		for(int i = 1; i < scores[difficulty].length; i++){
-			for(int j = i - 1; scores[difficulty][j] != null && scores[difficulty][j+1] != null && j >= 0 && scores[difficulty][j].compareTo(scores[difficulty][j+1]) > 0; j--){
+			for(int j = i - 1; j >= 0 && scores[difficulty][j] != null && scores[difficulty][j+1] != null && scores[difficulty][j].compareTo(scores[difficulty][j+1]) > 0; j--){
 				
 				Score one = scores[difficulty][j];
 				Score two = scores[difficulty][j+1];

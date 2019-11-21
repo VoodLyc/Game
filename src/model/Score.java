@@ -42,16 +42,25 @@ public class Score implements Serializable, Comparable <Score> {
 		
 		int result = 0;
 		
-		if(points < score.getPoints()) {
+		if(points > score.getPoints()) {
 			
 			result = 1;
 		}
-		else if(points > score.getPoints()) {
+		else if(points < score.getPoints()) {
 			
 			result = -1;
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public String toString() {
+		
+		String toString = Integer.toString(points) + "  " + name;
+		
+		return toString;
+		
 	}
 	
 //Getters
