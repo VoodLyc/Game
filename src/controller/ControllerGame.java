@@ -102,7 +102,7 @@ public class ControllerGame implements Initializable {
 		saveGame.setDisable(true);
 		highScores.setDisable(true);
 		
-		//Set the on action to the menuItem.
+		//Set the on action to the menuItems.
 		loadGame.setOnAction(event -> loadGame(saveGame, highScores));
 		saveGame.setOnAction(event -> saveGame());
 		highScores.setOnAction(event -> showHighScores(saveGame, highScores));
@@ -125,6 +125,7 @@ public class ControllerGame implements Initializable {
 		
 		saveGame.setDisable(true);
 		highScores.setDisable(true);
+		
 		//Clears the VBox's children.
 		box.getChildren().remove(pane);
 		border = new BorderPane();

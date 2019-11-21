@@ -82,24 +82,4 @@ public class Score implements Serializable, Comparable <Score> {
 	public int getPoints() {
 		return points;
 	}
-	
-//Setters
-	
-	/**
-	 * <b>Description:</b> Sets the value of the attribute name.<br>
-	 * @param name - The name of the player who got the points. 
-	 */
-	
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	/**
-	 * <b>Description:</b> Sets the value of the attribute points.<br>
-	 * @param points - The points that the player got in the game. 
-	 */
-
-	public void setPoints(int points) {
-		this.points = points;
-	}
 }

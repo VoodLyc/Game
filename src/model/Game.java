@@ -490,14 +490,32 @@ public class Game {
 		return points;
 	}
 	
+	/**
+	 * <b>Description:</b> Gets the value of the attribute scores.<br>
+	 * @return The attribute scores.
+	 */
+	
+	public Score[][] getScores() {
+		return scores;
+	}
+	
 //Setters
 	
 	/**
-	 * <b>Description:</b> Sets the value of the attribute path.<br>
-	 * @param path - The path of the file with the game configuration. 
+	 * <b>Description:</b> Sets the value of the attribute scores.<br>
+	 * @param scores - the game scores. 
 	 */
-
-	public void setPath(String path) {
-		this.path = path;
+	
+	public void setScore(Score[][] scores) {
+		this.scores = scores;
+	}
+	
+	/**
+	 * <b>Description:</b> Sets the value of the attribute scores.<br>
+	 * @param scores - the game scores. 
+	 */
+	
+	public void setPoints(int points) {
+		this.points = points;
 	}
 }
